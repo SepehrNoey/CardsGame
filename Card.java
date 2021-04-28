@@ -1,8 +1,9 @@
 package hw4_q3;
 
+/**
+ * an abstract class which contains the shared members of all types of cards
+ */
 public abstract class Card {
-    // what kind of card it is
-    private String type;
     // score of the card
     private int score;
     // to identify special cards(it can be identified by other things but , I choose this to iterate faster between special cards)
@@ -12,13 +13,11 @@ public abstract class Card {
 
     /**
      * constructor
-     * @param type is the type of the card
      * @param score is the score of the card
      * @param isSpecial identifies if the card is special , or not
      * @param color is the color of card
      */
-    public Card(String type, int score , boolean isSpecial , String color){
-        this.type = type;
+    public Card( int score , boolean isSpecial , String color){
         this.score = score;
         this.isSpecial = isSpecial;
         this.color = color;
@@ -27,7 +26,23 @@ public abstract class Card {
 
     /**
      * a method to do special actions on process of game if the card has actions
+     * @return enum which would be one of the types listed in Actions_enum
      */
-    public abstract void action();
+    public abstract Actions_enum action();
 
+    /**
+     * to access color
+     * @return color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * to access score of card
+     * @return
+     */
+    public int getScore() {
+        return score;
+    }
 }
