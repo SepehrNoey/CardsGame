@@ -8,10 +8,10 @@ package hw4_q3;
  * abstract class with shared members
  */
 public abstract class ActionCard extends Card {
-    public ActionCard(int score , String color){
-        super(score , true , color);
+    public ActionCard(int score , String color , cards_type_enum type){
+        super(score , true , color , type);
     }
 
-    public abstract Actions_enum action();
+    public abstract cards_type_enum action();
 
 }

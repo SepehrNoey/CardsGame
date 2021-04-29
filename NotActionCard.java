@@ -7,8 +7,8 @@ package hw4_q3;
  * these cards don't do any special action
  */
 public class NotActionCard extends Card {
-    public NotActionCard(int score , String color){
-        super(score , false  , color);
+    public NotActionCard(int score , String color , cards_type_enum type){
+        super(score , false  , color ,type);
     }
 
     /**
@@ -16,8 +16,8 @@ public class NotActionCard extends Card {
      * @return the type of card
      */
     @Override
-    public Actions_enum action() {
+    public cards_type_enum action() {    // i should change it for all classes
         // nothing
-        return Actions_enum.NO_ACTION;
+        return getType();
     }
 }
