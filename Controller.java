@@ -79,6 +79,11 @@ public class Controller {
         }
     }
 
+    /**
+     * the main loop of the game , if it ends , means the game is ended
+     * @param allCards are allCards created in other method
+     * @throws InterruptedException is needed for Thread.sleep
+     */
     public void play(ArrayList<Card> allCards) throws InterruptedException {
         Random random = new Random();
         ArrayList<Card> onTopCards = new ArrayList<>();
@@ -114,15 +119,17 @@ public class Controller {
                 }
             }
             // the game isn't finished yet
-            ListIterator<Player> itr = players.listIterator();
 
-            //showing cards
+
+            //showing handCards for human , showing top card for everyone(bot or human)
             printable.show_Turn_And_Rotation(rotation , turn);
             printable.showTop(onTopCards.get(0));
             if (turn.getHumanOrBot() == 1)
                 printable.showCards(turn.getMyCards()); // all new cards will be added to the head of the list
 
-            // player picks a card to play
+            // player picks a card to play ,
+            // In this round , if player is human , the card will be shown
+            // in other words , when a bot chooses a card to play , just its result will be printed in next round
             Card picked = turn.pick(onTopCards , remainingCards , must_take , is_color_determined);
             is_color_determined = null;
 

@@ -12,6 +12,10 @@ public abstract class ActionCard extends Card {
         super(score , true , color , type);
     }
 
+    /**
+     * the action of card
+     * @return Type of card
+     */
     public abstract cards_type_enum action();
 
 }

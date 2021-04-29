@@ -43,16 +43,24 @@ public abstract class Card {
 
     /**
      * to access score of card
-     * @return
+     * @return score
      */
     public int getScore() {
         return score;
     }
 
+    /**
+     * to access type of card
+     * @return type of card
+     */
     public cards_type_enum getType() {
         return type;
     }
 
+    /**
+     * to identify if the card is special or not
+     * @return true , if is special , false if it's not special
+     */
     public boolean isSpecial() {
         return isSpecial;
     }

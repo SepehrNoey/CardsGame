@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 public class Printable {
 
-    public Printable(){
+    // no fields , has default constructor
 
-    }
-
+    /**
+     * it shows the upper card , it is a bit different from showOneCard ,
+     * it exactly is called when printing the top card is needed
+     * @param onTop is the onTop card
+     */
     public void showTop(Card onTop){
         setColor(onTop);
         System.out.println("The upper card is: " + onTop.getType() + "\tColor: " + onTop.getColor());
@@ -16,6 +19,10 @@ public class Printable {
 
     }
 
+    /**
+     * it just prints the entered card
+     * @param card is the card to print
+     */
     public void showOneCard(Card card){
         setColor(card);
         for (int j = 0 ; j < 12 ; j++)
@@ -45,7 +52,11 @@ public class Printable {
         System.out.println("\u001B[0m"); // reset color
     }
 
-
+    /**
+     * it prints all cards in hand in an algorithm similar to showOneCard algorithm,
+     * but with the difference that all cards are shown here.
+     * @param handCards is all the cards to print
+     */
     public void showCards(ArrayList<Card> handCards) {
         System.out.print("\u001B[31m");
         System.out.println("\nYour cards are listed: ");
@@ -89,6 +100,10 @@ public class Printable {
         System.out.println("\u001B[0m");  // reset default color
     }
 
+    /**
+     * changes the color of printable things
+     * @param card is the card which is used to access card's color
+     */
     public void setColor(Card card){
         if (card.getColor().equals("red"))
             System.out.print("\u001B[31m");
@@ -101,6 +116,11 @@ public class Printable {
 
     }
 
+    /**
+     * a simple method to print the data of turn
+     * @param rotation it can be clockwise or anticlockwise
+     * @param turn is the player whose turn is
+     */
     public void show_Turn_And_Rotation(int rotation , Player turn){
         System.out.print("\u001B[36m");
         String rot = rotation == 0 ? "Clockwise" : "Anticlockwise";
@@ -108,6 +128,10 @@ public class Printable {
         System.out.print("\u001B[0m"); // reset color
     }
 
+    /**
+     * it is called when the game ends to print results
+     * @param players are players
+     */
     public static void printResult(ArrayList<Player> players){
         for (int i = 0 ; i < players.size() ; i++)
         {

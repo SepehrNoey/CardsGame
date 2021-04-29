@@ -1,5 +1,8 @@
 package hw4_q3;
 
+/**
+ * is made for separating types of cards
+ */
 public enum cards_type_enum {
     CARD_2,
     CARD_3,
@@ -16,6 +19,10 @@ public enum cards_type_enum {
     CARD_C,
     CARD_D;
 
+    /**
+     * overridden toString
+     * @return just the number part of card
+     */
     @Override
     public String toString(){
         switch (this)

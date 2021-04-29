@@ -20,6 +20,10 @@ public class Player {
         this.humanOrBot = humanOrBot;
     }
 
+    /**
+     * to access score for printing
+     * @return player's score
+     */
     public int getMyScore() {
         return myScore;
     }

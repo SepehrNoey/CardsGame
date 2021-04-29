@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * this class has to make some instances and
- * use other classes , runs a single set of game
+ * this class makes some instances and
+ * uses other classes to run the game
  */
 public class RunGame {
     public static void main(String[] args) throws InterruptedException {
