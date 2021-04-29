@@ -1,6 +1,8 @@
 package hw4_q3;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class Printable {
 
@@ -133,29 +135,16 @@ public class Printable {
      * @param players are players
      */
     public static void printResult(ArrayList<Player> players){
-        for (int i = 0 ; i < players.size() ; i++)
-        {
-            for (int j = i ; j < players.size() ; j++)
-            {
-                if (players.get(j).getMyScore() < players.get(i).getMyScore())
-                {
-                    Player temp = players.get(i);
-                    players.remove(i);
-                    players.add(i , players.get(j));
-                    players.remove(j);
-                    players.add(j , temp);
-                }
-            }
-        }
+        Collections.sort(players);
         int k = 0;
         System.out.print("\u001B[36m");
         System.out.println("\nPlayer " + players.get(0).getName() + " won!\nNow , Results: ");
         System.out.print("\u001B[0m");
-        for(Player player : players)
-        {
-            k++;
-            System.out.println(k + ") Name: " + player.getName() + "\tScore: " + player.getMyScore());
-        }
 
+        for(int i = players.size() - 1 ; i >= 0 ; i--)
+        {
+            System.out.println(k + ") Name: " + players.get(i).getName() + "\tScore: " + players.get(i).getMyScore());
+        }
     }
+
 }

@@ -7,7 +7,7 @@ import java.util.Scanner;
 /**
  * a class to make player and store its data
  */
-public class Player {
+public class Player implements Comparable<Player> {
     private final String name;
     private ArrayList<Card> myCards;
     private int myScore;
@@ -213,5 +213,15 @@ public class Player {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * overridden compareTo method , to sort players by their scores
+     * @param player is player to compare
+     * @return score of the player
+     */
+    @Override
+    public int compareTo(Player player) {
+        return player.getMyScore();
     }
 }
