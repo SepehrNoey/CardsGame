@@ -33,6 +33,14 @@ public class Player {
     }
 
     /**
+     * to set score of the player
+     * @param myScore
+     */
+    public void setMyScore(int myScore) {
+        this.myScore = myScore;
+    }
+
+    /**
      * to access cards of a player
      *
      * @return cards of this player
@@ -49,7 +57,7 @@ public class Player {
      *                       his hand , then can take one from this list
      * @return the picked card , or null if hasn't been taken
      */
-    public Card pick(ArrayList<Card> onTopCards, ArrayList<Card> remainingCards , int must_take , String is_color_determined) {
+    public Card pick(ArrayList<Card> onTopCards, ArrayList<Card> remainingCards , int must_take , String is_color_determined) throws InterruptedException {
         ArrayList<Card> validCards = new ArrayList<>();  // all valid cards
 
         // this part is for both human and bot
@@ -62,7 +70,7 @@ public class Player {
 
         // getting valid cards
         for (Card fromList : myCards) {
-            if (isValid(fromList, onTopCards , is_color_determined))
+            if (isValid(fromList, onTopCards , is_color_determined, must_take))
                 validCards.add(fromList);
         }
 
@@ -82,8 +90,11 @@ public class Player {
         }
         if (must_take > 0 && card_7 == null)
         {
-            if (humanOrBot == 1)
-                System.out.println("No 7_CARD to choose.I give you " + must_take + "random cards: ");
+            if (humanOrBot == 1) {
+                System.out.println("No 7_CARD to choose.I give you " + must_take + " random cards.\nFor continue type anything:");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+            }
             Random random = new Random();
             for (int i = 0 ; i < must_take ; i++)
             {
@@ -91,22 +102,38 @@ public class Player {
                 myCards.add(remainingCards.get(rand));
                 remainingCards.remove(rand);
             }
+            if (this.humanOrBot == 0) {
+                System.out.println(this.getName() + " took " + must_take + " cards.\nType anything to continue:");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+            }
+            return null;
         }
 
 
 
         if (validCards.size() == 0)
         {
-            if (humanOrBot == 1)
-                System.out.println("No valid cards in hands! Take from repository: ");
+            if (humanOrBot == 1) {
+                System.out.println("No valid cards in hands! To take from repository press 1 : ");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+            }
             Card fromRepo = remainingCards.get(0);
-            if (isValid(fromRepo, onTopCards, is_color_determined))
+            if (isValid(fromRepo, onTopCards, is_color_determined , must_take))
             {
+                remainingCards.remove(fromRepo);
                 return fromRepo;
             }
             else{
+                System.out.print("\u001B[31m");
+                if (this.humanOrBot == 1)
+                    System.out.println("\nDidn't get a good card to play. Keep it for yourself :)");
+                else
+                    System.out.println(this.getName() + " didn't get a good card from remaining cards to play.");
                 myCards.add(fromRepo); // player should take the card
                 remainingCards.remove(fromRepo);
+                System.out.print("\u001B[0m"); // reset color
                 return null; // next player turn
             }
         }
@@ -118,6 +145,7 @@ public class Player {
         {
             if(onTopCards.get(0).getType() == cards_type_enum.CARD_7 || onTopCards.get(0).getType() == cards_type_enum.CARD_7_YE)
             {
+                this.getMyCards().remove(card_7);
                 return card_7;  // card 7 is picked when on top card is 7 , if we dont have , then null returns
             }
             if (validActionCard != null) {
@@ -138,9 +166,9 @@ public class Player {
                 System.out.println("Choose one card by index:(index begins from 0!)");
                 int choice = scanner.nextInt();
                 // now checking validity
-                if (choice >= myCards.size() || choice < 0 || !isValid(myCards.get(choice) , onTopCards, is_color_determined))
+                if (choice >= myCards.size() || choice < 0 || !isValid(myCards.get(choice) , onTopCards, is_color_determined ,must_take))
                     System.out.println("Invalid input.Try Again.");
-                else if (isValid(myCards.get(choice) , onTopCards , is_color_determined))
+                else if (isValid(myCards.get(choice) , onTopCards , is_color_determined,must_take))
                 {
                     Card temp = myCards.get(choice);
                     myCards.remove(choice);
@@ -156,9 +184,12 @@ public class Player {
      * @param onTopCards the cards which have been used before
      * @return true if the card is valid , false if not
      */
-    public boolean isValid(Card forCheck, ArrayList<Card> onTopCards , String is_color_determined) {
+    public boolean isValid(Card forCheck, ArrayList<Card> onTopCards , String is_color_determined , int must_take) {
+
+
         if (onTopCards.get(0).getType() == cards_type_enum.CARD_7 || onTopCards.get(0).getType() == cards_type_enum.CARD_7_YE) {  //special comparing for 7 and 7_yellow
-            return forCheck.getType() == cards_type_enum.CARD_7 || forCheck.getType() == cards_type_enum.CARD_7_YE;
+            if (must_take > 0)
+                return forCheck.getType() == cards_type_enum.CARD_7 || forCheck.getType() == cards_type_enum.CARD_7_YE;
         }
         if (forCheck.getType() == cards_type_enum.CARD_B) // Card_B (Soldier is always valid)
             return true;
@@ -167,7 +198,7 @@ public class Player {
             if (forCheck.getColor().equals(is_color_determined))
                 return true;
         }
-        if (forCheck.getColor().equals(onTopCards.get(0).getColor()))
+        if (forCheck.getColor().equals(onTopCards.get(0).getColor()) && is_color_determined == null)
             return true;
         return forCheck.getType() == onTopCards.get(0).getType();
     }

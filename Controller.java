@@ -79,7 +79,7 @@ public class Controller {
         }
     }
 
-    public void play(ArrayList<Card> allCards){
+    public void play(ArrayList<Card> allCards) throws InterruptedException {
         Random random = new Random();
         ArrayList<Card> onTopCards = new ArrayList<>();
 
@@ -108,43 +108,69 @@ public class Controller {
         {
             for (Player player : players)
             {
-                if (player.getMyCards().size() == 0)
+                if (player.getMyCards().size() == 0) {
+                    setScores();
                     return;
+                }
             }
             // the game isn't finished yet
             ListIterator<Player> itr = players.listIterator();
 
             //showing cards
             printable.show_Turn_And_Rotation(rotation , turn);
-            printable.showHand_And_Top(turn.getMyCards() , onTopCards.get(0)); // all new cards will be added to the head of the list
+            printable.showTop(onTopCards.get(0));
+            if (turn.getHumanOrBot() == 1)
+                printable.showCards(turn.getMyCards()); // all new cards will be added to the head of the list
 
             // player picks a card to play
             Card picked = turn.pick(onTopCards , remainingCards , must_take , is_color_determined);
-
+            is_color_determined = null;
 
             // managing actions
             if (picked == null) // no card is put
             {
+                Thread.sleep(4000);
                 must_take = 0; // the additional card have been taken
             }
-            if (picked != null)
-                onTopCards.add(0,picked);
+            if (picked != null) {
+                onTopCards.add(0, picked);
+                if (turn.getHumanOrBot() == 1)
+                    printable.showOneCard(picked);
+                else {
+                    System.out.println(turn.getName() + " chose CARD_" + picked.getType() + " with color " + picked.getColor());
+                }
+                Thread.sleep(4000);
+            }
             if (picked instanceof Card_2)
             {
-                while (true)
-                {
-                    System.out.println("You put CARD_2. Enter the index of a player to give card:(starts from zero) ");
-                    Scanner scanner = new Scanner(System.in);
-                    int idx = scanner.nextInt();
-                    if (idx == turn_maker || idx < 0 || idx >= players.size())
-                        System.out.println("Invalid input. Try again.");
-                    else
+                if (turn.getHumanOrBot() == 1)
+                    while (true)
                     {
-                        int cardIdx = random.nextInt(turn.getMyCards().size());
-                        System.out.println(turn.getMyCards().get(cardIdx).getType() + "\tColor: " + turn.getMyCards().get(cardIdx).getColor() + "\tchose for giving.");
-                        players.get(idx).getMyCards().add(turn.getMyCards().get(cardIdx));
-                        turn.getMyCards().remove(cardIdx);
-                        break;
+                        System.out.println("You put CARD_2. Enter the index of a player to give card:(starts from zero) ");
+                        Scanner scanner = new Scanner(System.in);
+                        int idx = scanner.nextInt();
+                        if (idx == turn_maker || idx < 0 || idx >= players.size())
+                            System.out.println("Invalid input. Try again.");
+                        else
+                        {
+                            int cardIdx = random.nextInt(turn.getMyCards().size());
+                            System.out.println(turn.getMyCards().get(cardIdx).getType() + "\tColor: " + turn.getMyCards().get(cardIdx).getColor() + "\tchose for giving.");
+                            players.get(idx).getMyCards().add(turn.getMyCards().get(cardIdx));
+                            turn.getMyCards().remove(cardIdx);
+                            break;
+                        }
+                    }
+                else
+                {
+                    while (true){
+                        int idx = random.nextInt(players.size());
+                        if (idx != players.indexOf(turn)) {
+                            int cardIdx = random.nextInt(turn.getMyCards().size());
+                            players.get(idx).getMyCards().add(turn.getMyCards().get(cardIdx));
+                            turn.getMyCards().remove(cardIdx);
+                            System.out.println("CARD_2 was chosen." + turn.getName() + " gave a card to " + players.get(idx).getName());
+                            break;
+                        }
                     }
                 }
             }
@@ -186,7 +212,7 @@ public class Controller {
                         if (choice >= 1 && choice <= 4)
                         {
                             is_color_determined = colors[choice - 1];
-                            return;
+                            break;
                         }
                         System.out.println("Invalid input. Try again.");
                     }
@@ -198,14 +224,37 @@ public class Controller {
             // if remainder is positive , it's ok , but if it's negative , size + (negative value) determines the turn
             turn = players.get(turn_maker % players.size() >= 0 ? turn_maker % players.size() : players.size() + turn_maker % players.size());
 
-            // adding the card before last card to remaining cards
-            remainingCards.add(onTopCards.get(onTopCards.size() - 1));
-            onTopCards.remove(onTopCards.size() - 1);
-
-
+            if (onTopCards.size() > 1 && remainingCards.size() == 1) // when there is just one card in list remaining cards
+            {
+                // adding the card before last card to remaining cards
+                int first_size = onTopCards.size();
+                for (int i = first_size - 1 ; i > 0 ; i--)
+                {
+                    remainingCards.add(onTopCards.get(onTopCards.size() - 1));
+                    onTopCards.remove(onTopCards.size() - 1);
+                }
+            }
 
         }
 
+    }
+
+    /**
+     * a method to calculate scores of players when the game ends
+     */
+    private void setScores(){
+        for (Player player : players)
+        {
+            if (player.getMyCards().size() == 0)
+                player.setMyScore(0);
+            else
+            {
+                int sum = 0;
+                for (Card card : player.getMyCards())
+                    sum += card.getScore();
+                player.setMyScore(sum);
+            }
+        }
     }
 
 }
